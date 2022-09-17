@@ -1,10 +1,13 @@
 import { PrismaClient } from '@prisma/client';
 import express from 'express';
 import { convertHour } from './utils/convert-hour';
+import { convertMinutes } from './utils/convert-minutes';
+
+
 
 const app = express();
 
-app.use(express.json())
+app.use(express.json());
 
 const prisma = new PrismaClient({
     log: ['query']
@@ -24,7 +27,7 @@ app.get('/games', async (request, response)  => {
     return response.json(games)
 });
 
-app.post('/games/:id/ads', async (request, response) => {
+app.post("/games/:id/ads", async (request, response) => {
     const gameId = request.params.id;
     const body = request.body;
 
@@ -37,12 +40,12 @@ app.post('/games/:id/ads', async (request, response) => {
             weekDays: body.weekDays.join(','),
             hoursStart: convertHour(body.hoursStart),
             hoursEnd: convertHour(body.hoursEnd),
-            useVoiceChannel: body.useVoiceChannel,
+            useVoiceChannel: true,
         }
     })
-    
+
     return response.status(201).json(ad);
-});
+  });
 
 
 app.get('/games/:id/ads', async (request, response) => {
@@ -70,6 +73,8 @@ app.get('/games/:id/ads', async (request, response) => {
         return {
             ...ad,
             weekDays: ad.weekDays.split(','),
+            hoursStart: convertMinutes(ad.hoursStart),
+            hoursEnd: convertMinutes(ad.hoursEnd),
         }
     }));
 })
@@ -93,3 +98,7 @@ app.get('/ads/:id/discord', async (request, response) => {
 
 console.log('Server Acessado!');
 app.listen(3333);
+
+function cors(): any {
+    throw new Error('Function not implemented.');
+}
