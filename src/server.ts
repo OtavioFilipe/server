@@ -3,10 +3,10 @@ import express from 'express';
 import { convertHour } from './utils/convert-hour';
 import { convertMinutes } from './utils/convert-minutes';
 
-
-
+const coors = require('cors')
 const app = express();
 
+app.use(coors());
 app.use(express.json());
 
 const prisma = new PrismaClient({
